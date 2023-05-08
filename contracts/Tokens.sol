@@ -45,7 +45,7 @@ contract Token is ERC1155URIStorage {
         uint Id;
         string URI;
         address Advertiser;
-        address[] Publishers;
+        uint[] PublishingRooms;
         bool Active;
         uint TotalSpent;
         uint MaxBudget;
@@ -181,7 +181,7 @@ contract Token is ERC1155URIStorage {
             newTokenId,
             _uri,
             msg.sender,
-            new address[](0),
+            new uint[](0),
             false,
             0,
             0

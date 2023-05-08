@@ -2,17 +2,20 @@
 pragma solidity ^0.8.0;
 
 interface ITokens {
-    struct Video {
-        uint id;
+   struct Video {
+        uint Id;
         string URI;
-        uint256 price;
-        uint256 views;
-        uint256 likes;
-        uint256 dislikes;
-        uint256 shares;
-        uint256 comments;
-        uint256 total;
-        uint256 timestamp;
+        address Owner;
+        address Creator;
+        uint Price;
+        uint SocialTokenId;
+        uint DisplayReward;
+        uint ClickReward;
+        uint OwnerPercentage;
+        uint HoldersPercentage;
+        address[] Benefeciaries;
+        bool AdsEnabled;
+        uint RoomId;
     }
     struct SocialToken {
         uint id;
@@ -35,6 +38,16 @@ interface ITokens {
         uint[] videoIds;
     }
 
+    struct Ad {
+        uint Id;
+        string URI;
+        address Advertiser;
+        uint[] PublishingRooms;
+        bool Active;
+        uint TotalSpent;
+        uint MaxBudget;
+    }
+
     function getVideo(uint _id) external view returns (Video memory);
 
     function getSocialToken(
@@ -42,4 +55,14 @@ interface ITokens {
     ) external view returns (SocialToken memory);
 
     function getRoom(uint _id) external view returns (Room memory);
+
+    function getAd(uint _adId) external view returns (Ad memory);
+    
+    function _safeTransferFrom(
+        address from,
+        address to,
+        uint256 id,
+        uint256 amount,
+        bytes memory data
+    ) external;
 }
