@@ -2,6 +2,19 @@
 pragma solidity ^0.8.0;
 
 interface ITokens {
+    struct SocialToken {
+        uint ID;
+        string URI;
+        uint256 totalSupply;
+        uint circulatingSupply;
+        uint price;
+        bool launched;
+        uint revenueSplit;
+        address creator;
+        uint maxHoldingAmount;
+        uint[] videoIds;
+    }
+
     struct Video {
         uint Id;
         string URI;
@@ -9,33 +22,13 @@ interface ITokens {
         address Creator;
         uint Price;
         uint SocialTokenId;
-        uint ClickReward;
         uint OwnerPercentage;
         uint HoldersPercentage;
         address[] Benefeciaries;
+        bool Listed;
+        bool Published;
         bool AdsEnabled;
         uint RoomId;
-    }
-    struct SocialToken {
-        uint id;
-        string URI;
-        uint256 totalSupply;
-        uint256 circulatingSupply;
-        uint256 price;
-        bool launched;
-        uint256 revenueSplit;
-        address creator;
-        uint256 maxHoldingAmount;
-        uint[] videoIds;
-    }
-    struct Room {
-        uint id;
-        string URI;
-        address creator;
-        address owner;
-        uint256 price;
-        uint DisplayReward;
-        uint[] videoIds;
     }
 
     struct Ad {
@@ -49,6 +42,17 @@ interface ITokens {
         uint MaxBudget;
     }
 
+    struct Room {
+        uint Id;
+        string URI;
+        address Creator;
+        address Owner;
+        uint Price;
+        uint DisplayReward;
+        uint[] VideoIds;
+        bool Listed;
+    }
+
     function getSocialToken(
         uint _id
     ) external view returns (SocialToken memory);
@@ -59,10 +63,18 @@ interface ITokens {
 
     function getRoom(uint _id) external view returns (Room memory);
 
-    function transferCreatorzTokens(
+    function transferTokens(
         address _from,
         address _to,
-        uint256 _amount
+        uint256 _amount,
+        uint _id
+    ) external;
+
+    function transferBatch(
+        address _from,
+        address _to,
+        uint256[] memory _ids,
+        uint256[] memory _amounts
     ) external;
 
     function updateAdParameters(
@@ -73,5 +85,27 @@ interface ITokens {
         uint _totalSpent,
         uint _currentBudget,
         uint _maxBudget
+    ) external;
+
+    function updateVideoParameters(
+        uint _id,
+        address _owner,
+        uint _price,
+        address _beneficiary,
+        uint _action,
+        bool _listed,
+        bool _published,
+        bool _AdsEnabled,
+        uint _roomId
+    ) external;
+
+    function updateRoomParameters(
+        uint _id,
+        address _owner,
+        uint _price,
+        uint _displayCharge,
+        uint _videoId,
+        uint _action,
+        bool _listed
     ) external;
 }

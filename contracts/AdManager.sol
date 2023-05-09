@@ -37,7 +37,7 @@ contract AdManager is ERC1155Holder {
             ad.CurrentBudget + _maxBudget,
             ad.CurrentBudget + _maxBudget
         );
-        token.transferCreatorzTokens(ad.Advertiser, address(this), _maxBudget);
+        token.transferTokens(ad.Advertiser, address(this), 0, _maxBudget);
         emit CampaignStarted(_AdId, _maxBudget);
     }
 
@@ -53,11 +53,7 @@ contract AdManager is ERC1155Holder {
             ad.CurrentBudget,
             ad.CurrentBudget
         );
-        token.transferCreatorzTokens(
-            address(this),
-            ad.Advertiser,
-            ad.CurrentBudget
-        );
+        token.transferTokens(address(this), ad.Advertiser, 0, ad.CurrentBudget);
         emit CampaignStopped(_AdId, ad.CurrentBudget);
     }
 
@@ -76,15 +72,12 @@ contract AdManager is ERC1155Holder {
             (video.OwnerPercentage / 100);
         uint beneficieriesReward = room.DisplayReward *
             (video.HoldersPercentage / 100);
-        token.transferCreatorzTokens(
-            address(this),
-            video.Owner,
-            publisherReward
-        );
+        token.transferTokens(address(this), video.Owner, 0, publisherReward);
         for (uint i = 0; i < video.Benefeciaries.length; i++) {
-            token.transferCreatorzTokens(
+            token.transferTokens(
                 address(this),
                 video.Benefeciaries[i],
+                0,
                 beneficieriesReward
             );
         }

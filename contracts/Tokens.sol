@@ -10,7 +10,7 @@ contract Token is ERC1155URIStorage {
     Counters.Counter private _tokenIds;
     uint private CreatorzToken;
 
-    address private _owner;
+    address private owner;
 
     struct SocialToken {
         uint ID;
@@ -35,6 +35,8 @@ contract Token is ERC1155URIStorage {
         uint OwnerPercentage;
         uint HoldersPercentage;
         address[] Benefeciaries;
+        bool Listed;
+        bool Published;
         bool AdsEnabled;
         uint RoomId;
     }
@@ -58,6 +60,7 @@ contract Token is ERC1155URIStorage {
         uint Price;
         uint DisplayReward;
         uint[] VideoIds;
+        bool Listed;
     }
 
     mapping(uint => SocialToken) private socialTokens;
@@ -85,7 +88,7 @@ contract Token is ERC1155URIStorage {
     event AdCreated(uint Id, string URI, address Advertiser);
 
     constructor() ERC1155(" ") {
-        _owner = msg.sender;
+        owner = msg.sender;
         CreatorzToken = _tokenIds.current();
     }
 
@@ -148,8 +151,11 @@ contract Token is ERC1155URIStorage {
             0,
             new address[](0),
             false,
+            false,
+            false,
             _roomId
         );
+        rooms[_roomId].VideoIds.push(newTokenId);
         videos[newTokenId] = newVideo;
         emit VideoMinted(newTokenId, _URI, msg.sender);
     }
@@ -166,7 +172,8 @@ contract Token is ERC1155URIStorage {
             msg.sender,
             0,
             _displayCharge,
-            new uint[](0)
+            new uint[](0),
+            false
         );
         rooms[newTokenId] = newRoom;
         emit RoomMinted(newTokenId, _URI, msg.sender);
@@ -191,15 +198,25 @@ contract Token is ERC1155URIStorage {
         emit AdCreated(newTokenId, _uri, msg.sender);
     }
 
-    function transferCreatorzTokens(
+    function transferTokens(
         address _from,
         address _to,
-        uint256 _amount
+        uint256 _amount,
+        uint _id
     ) external {
-        _safeTransferFrom(_from, _to, CreatorzToken, _amount, "");
+        _safeTransferFrom(_from, _to, _id, _amount, "");
     }
 
-    function updateAdParamaeters(
+    function transferBatch(
+        address _from,
+        address _to,
+        uint256[] memory _ids,
+        uint256[] memory _amounts
+    ) external {
+        _safeBatchTransferFrom(_from, _to, _ids, _amounts, "");
+    }
+
+    function updateAdParameters(
         uint _id,
         uint _roomId,
         uint roomAdded,
@@ -224,6 +241,65 @@ contract Token is ERC1155URIStorage {
         ads[_id].TotalSpent = _totalSpent;
         ads[_id].CurrentBudget = _currentBudget;
         ads[_id].MaxBudget = _maxBudget;
+    }
+
+    function updateVideoParameters(
+        uint _id,
+        address _owner,
+        uint _price,
+        address _beneficiary,
+        uint _action,
+        bool _listed,
+        bool _published,
+        bool _AdsEnabled,
+        uint _roomId
+    ) external {
+        videos[_id].Owner = _owner;
+        videos[_id].Price = _price;
+        videos[_id].Listed = _listed;
+        videos[_id].Published = _published;
+        videos[_id].AdsEnabled = _AdsEnabled;
+        videos[_id].RoomId = _roomId;
+        if (_action == 1) {
+            videos[_id].Benefeciaries.push(_beneficiary);
+        } else if (_action == 0) {
+            for (uint i = 0; i < videos[_id].Benefeciaries.length; i++) {
+                if (videos[_id].Benefeciaries[i] == _beneficiary) {
+                    videos[_id].Benefeciaries[i] = videos[_id].Benefeciaries[
+                        videos[_id].Benefeciaries.length - 1
+                    ];
+                    videos[_id].Benefeciaries.pop();
+                }
+            }
+        }
+    }
+
+    function updateRoomParameters(
+        uint _id,
+        address _owner,
+        uint _price,
+        uint _displayCharge,
+        uint _videoId,
+        uint _action,
+        bool _listed
+    ) external {
+        rooms[_id].Owner = _owner;
+        rooms[_id].Price = _price;
+        rooms[_id].DisplayReward = _displayCharge;
+        rooms[_id].VideoIds.push(_videoId);
+        rooms[_id].Listed = _listed;
+        if (_action == 1) {
+            rooms[_id].VideoIds.push(_videoId);
+        } else if (_action == 0) {
+            for (uint i = 0; i < rooms[_id].VideoIds.length; i++) {
+                if (rooms[_id].VideoIds[i] == _videoId) {
+                    rooms[_id].VideoIds[i] = rooms[_id].VideoIds[
+                        rooms[_id].VideoIds.length - 1
+                    ];
+                    rooms[_id].VideoIds.pop();
+                }
+            }
+        }
     }
 
     function getVideo(uint _id) external view returns (Video memory) {
