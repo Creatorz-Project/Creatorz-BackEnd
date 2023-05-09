@@ -32,8 +32,6 @@ contract Token is ERC1155URIStorage {
         address Creator;
         uint Price;
         uint SocialTokenId;
-        uint DisplayReward;
-        uint ClickReward;
         uint OwnerPercentage;
         uint HoldersPercentage;
         address[] Benefeciaries;
@@ -48,6 +46,7 @@ contract Token is ERC1155URIStorage {
         uint[] PublishingRooms;
         bool Active;
         uint TotalSpent;
+        uint CurrentBudget;
         uint MaxBudget;
     }
 
@@ -57,6 +56,7 @@ contract Token is ERC1155URIStorage {
         address Creator;
         address Owner;
         uint Price;
+        uint DisplayReward;
         uint[] VideoIds;
     }
 
@@ -90,7 +90,7 @@ contract Token is ERC1155URIStorage {
     }
 
     function getCreatorzTokens() public {
-        _mint(msg.sender, CreatorzToken, 10 ether, "");
+        _mint(msg.sender, CreatorzToken, 100, "");
     }
 
     function mintSocialTokens(
@@ -132,6 +132,7 @@ contract Token is ERC1155URIStorage {
     }
 
     function mintVideo(string memory _URI, uint _roomId) public {
+        require(rooms[_roomId].Creator == msg.sender, "Not the room owner");
         _tokenIds.increment();
         uint256 newTokenId = _tokenIds.current();
         _mint(msg.sender, newTokenId, 1, "");
@@ -145,8 +146,6 @@ contract Token is ERC1155URIStorage {
             0,
             0,
             0,
-            0,
-            0,
             new address[](0),
             false,
             _roomId
@@ -155,7 +154,7 @@ contract Token is ERC1155URIStorage {
         emit VideoMinted(newTokenId, _URI, msg.sender);
     }
 
-    function createRoom(string memory _URI) public {
+    function createRoom(string memory _URI, uint _displayCharge) public {
         _tokenIds.increment();
         uint256 newTokenId = _tokenIds.current();
         _mint(msg.sender, newTokenId, 1, "");
@@ -166,6 +165,7 @@ contract Token is ERC1155URIStorage {
             msg.sender,
             msg.sender,
             0,
+            _displayCharge,
             new uint[](0)
         );
         rooms[newTokenId] = newRoom;
@@ -184,10 +184,46 @@ contract Token is ERC1155URIStorage {
             new uint[](0),
             false,
             0,
+            0,
             0
         );
         ads[newTokenId] = newAd;
         emit AdCreated(newTokenId, _uri, msg.sender);
+    }
+
+    function transferCreatorzTokens(
+        address _from,
+        address _to,
+        uint256 _amount
+    ) external {
+        _safeTransferFrom(_from, _to, CreatorzToken, _amount, "");
+    }
+
+    function updateAdParamaeters(
+        uint _id,
+        uint _roomId,
+        uint roomAdded,
+        bool _status,
+        uint _totalSpent,
+        uint _currentBudget,
+        uint _maxBudget
+    ) external {
+        if (roomAdded == 1) {
+            ads[_id].PublishingRooms.push(_roomId);
+        } else if (roomAdded == 0) {
+            for (uint i = 0; i < ads[_id].PublishingRooms.length; i++) {
+                if (ads[_id].PublishingRooms[i] == _roomId) {
+                    ads[_id].PublishingRooms[i] = ads[_id].PublishingRooms[
+                        ads[_id].PublishingRooms.length - 1
+                    ];
+                    ads[_id].PublishingRooms.pop();
+                }
+            }
+        }
+        ads[_id].Active = _status;
+        ads[_id].TotalSpent = _totalSpent;
+        ads[_id].CurrentBudget = _currentBudget;
+        ads[_id].MaxBudget = _maxBudget;
     }
 
     function getVideo(uint _id) external view returns (Video memory) {
@@ -196,6 +232,10 @@ contract Token is ERC1155URIStorage {
 
     function getAd(uint _id) external view returns (Ad memory) {
         return ads[_id];
+    }
+
+    function getRoom(uint _id) external view returns (Room memory) {
+        return rooms[_id];
     }
 
     function getSocialToken(

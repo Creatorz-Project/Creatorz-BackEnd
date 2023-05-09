@@ -2,14 +2,13 @@
 pragma solidity ^0.8.0;
 
 interface ITokens {
-   struct Video {
+    struct Video {
         uint Id;
         string URI;
         address Owner;
         address Creator;
         uint Price;
         uint SocialTokenId;
-        uint DisplayReward;
         uint ClickReward;
         uint OwnerPercentage;
         uint HoldersPercentage;
@@ -35,6 +34,7 @@ interface ITokens {
         address creator;
         address owner;
         uint256 price;
+        uint DisplayReward;
         uint[] videoIds;
     }
 
@@ -45,24 +45,33 @@ interface ITokens {
         uint[] PublishingRooms;
         bool Active;
         uint TotalSpent;
+        uint CurrentBudget;
         uint MaxBudget;
     }
-
-    function getVideo(uint _id) external view returns (Video memory);
 
     function getSocialToken(
         uint _id
     ) external view returns (SocialToken memory);
 
+    function getAd(uint _adId) external view returns (Ad memory);
+
+    function getVideo(uint _id) external view returns (Video memory);
+
     function getRoom(uint _id) external view returns (Room memory);
 
-    function getAd(uint _adId) external view returns (Ad memory);
-    
-    function _safeTransferFrom(
-        address from,
-        address to,
-        uint256 id,
-        uint256 amount,
-        bytes memory data
+    function transferCreatorzTokens(
+        address _from,
+        address _to,
+        uint256 _amount
+    ) external;
+
+    function updateAdParameters(
+        uint _id,
+        uint _roomId,
+        uint roomAdded,
+        bool _status,
+        uint _totalSpent,
+        uint _currentBudget,
+        uint _maxBudget
     ) external;
 }
