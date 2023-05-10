@@ -12,7 +12,7 @@ interface ITokens {
         uint revenueSplit;
         address creator;
         uint maxHoldingAmount;
-        uint[] videoIds;
+        uint videoIds;
     }
 
     struct Video {
@@ -29,6 +29,13 @@ interface ITokens {
         bool Published;
         bool AdsEnabled;
         uint RoomId;
+    }
+
+    struct SocialTokenHolder {
+        uint Id;
+        uint amount;
+        uint price;
+        uint currentlyListed;
     }
 
     struct Ad {
@@ -63,6 +70,16 @@ interface ITokens {
 
     function getRoom(uint _id) external view returns (Room memory);
 
+    function getSocialTokenHolder(
+        uint _id,
+        address _account
+    ) external view returns (SocialTokenHolder memory);
+
+    function getBalance(
+        address _account,
+        uint _id
+    ) external view returns (uint256);
+
     function transferTokens(
         address _from,
         address _to,
@@ -96,8 +113,11 @@ interface ITokens {
         bool _listed,
         bool _published,
         bool _AdsEnabled,
+        uint _OwnerPercentage,
+        uint _HoldersPercentage,
+        uint _socialTokenId,
         uint _roomId
-    ) external;
+    ) external ;
 
     function updateRoomParameters(
         uint _id,
@@ -107,5 +127,22 @@ interface ITokens {
         uint _videoId,
         uint _action,
         bool _listed
+    ) external;
+
+    function updateSocialTokenParameters(
+        uint _id,
+        uint _circulatingSupply,
+        uint price,
+        bool _launched,
+        uint _revenueSplit,
+        uint videoId
+    ) external;
+
+    function updateSocialTokenHolderParameters(
+        uint _id,
+        uint _amount,
+        uint _price,
+        uint _currentlyListed,
+        address _account
     ) external;
 }

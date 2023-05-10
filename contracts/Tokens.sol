@@ -22,7 +22,14 @@ contract Token is ERC1155URIStorage {
         uint revenueSplit;
         address creator;
         uint maxHoldingAmount;
-        uint[] videoIds;
+        uint videoIds;
+    }
+
+    struct SocialTokenHolder {
+        uint Id;
+        uint amount;
+        uint price;
+        uint currentlyListed;
     }
 
     struct Video {
@@ -67,6 +74,8 @@ contract Token is ERC1155URIStorage {
     mapping(uint => Video) private videos;
     mapping(uint => Room) private rooms;
     mapping(uint => Ad) private ads;
+    mapping(uint => mapping(address => SocialTokenHolder))
+        private socialTokenHolders;
 
     event TokenMinted(
         uint ID,
@@ -77,7 +86,7 @@ contract Token is ERC1155URIStorage {
         uint revenueSplit,
         address creator,
         uint maxHoldingAmount,
-        uint[] videoIds
+        uint videoIds
     );
 
     event VideoMinted(uint Id, string URI, address Owner);
@@ -102,7 +111,7 @@ contract Token is ERC1155URIStorage {
         uint _price,
         string memory _URI,
         uint _maxHoldingAmount,
-        uint[] memory _videoIds
+        uint _videoId
     ) public {
         _tokenIds.increment();
         uint256 newTokenId = _tokenIds.current();
@@ -118,7 +127,7 @@ contract Token is ERC1155URIStorage {
             _revenueSplit,
             msg.sender,
             _maxHoldingAmount,
-            _videoIds
+            _videoId
         );
         socialTokens[newTokenId] = newToken;
         emit TokenMinted(
@@ -130,7 +139,7 @@ contract Token is ERC1155URIStorage {
             _revenueSplit,
             msg.sender,
             _maxHoldingAmount,
-            _videoIds
+            _videoId
         );
     }
 
@@ -216,6 +225,13 @@ contract Token is ERC1155URIStorage {
         _safeBatchTransferFrom(_from, _to, _ids, _amounts, "");
     }
 
+    function getBalance(
+        address _account,
+        uint _id
+    ) external view returns (uint256) {
+        return balanceOf(_account, _id);
+    }
+
     function updateAdParameters(
         uint _id,
         uint _roomId,
@@ -252,6 +268,9 @@ contract Token is ERC1155URIStorage {
         bool _listed,
         bool _published,
         bool _AdsEnabled,
+        uint _OwnerPercentage,
+        uint _HoldersPercentage,
+        uint _socialTokenId,
         uint _roomId
     ) external {
         videos[_id].Owner = _owner;
@@ -259,6 +278,9 @@ contract Token is ERC1155URIStorage {
         videos[_id].Listed = _listed;
         videos[_id].Published = _published;
         videos[_id].AdsEnabled = _AdsEnabled;
+        videos[_id].OwnerPercentage = _OwnerPercentage;
+        videos[_id].HoldersPercentage = _HoldersPercentage;
+        videos[_id].SocialTokenId = _socialTokenId;
         videos[_id].RoomId = _roomId;
         if (_action == 1) {
             videos[_id].Benefeciaries.push(_beneficiary);
@@ -302,6 +324,33 @@ contract Token is ERC1155URIStorage {
         }
     }
 
+    function updateSocialTokenParameters(
+        uint _id,
+        uint _circulatingSupply,
+        uint price,
+        bool _launched,
+        uint _revenueSplit,
+        uint videoId
+    ) external {
+        socialTokens[_id].circulatingSupply = _circulatingSupply;
+        socialTokens[_id].price = price;
+        socialTokens[_id].launched = _launched;
+        socialTokens[_id].revenueSplit = _revenueSplit;
+        socialTokens[_id].videoIds = videoId;
+    }
+
+    function updateSocialTokenHolderParameters(
+        uint _id,
+        uint _amount,
+        uint _price,
+        uint _currentlyListed,
+        address _account
+    ) external {
+        socialTokenHolders[_id][_account].amount = _amount;
+        socialTokenHolders[_id][_account].price = _price;
+        socialTokenHolders[_id][_account].currentlyListed = _currentlyListed;
+    }
+
     function getVideo(uint _id) external view returns (Video memory) {
         return videos[_id];
     }
@@ -318,5 +367,12 @@ contract Token is ERC1155URIStorage {
         uint _id
     ) external view returns (SocialToken memory) {
         return socialTokens[_id];
+    }
+
+    function getSocialTokenHolder(
+        uint _id,
+        address _account
+    ) external view returns (SocialTokenHolder memory) {
+        return socialTokenHolders[_id][_account];
     }
 }
