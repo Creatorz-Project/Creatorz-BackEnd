@@ -55,10 +55,12 @@ contract ContentManager {
             false,
             true,
             _adsEnabled,
-            _ownerPercentage,
-            _holdersPercentage,
-            video.SocialTokenId,
             video.RoomId
+        );
+        tokens.updateVideoRevenueParameters(
+            _id,
+            _ownerPercentage,
+            _holdersPercentage
         );
         emit VideoPublished(
             _id,
@@ -88,9 +90,6 @@ contract ContentManager {
             false,
             false,
             false,
-            0,
-            0,
-            video.SocialTokenId,
             video.RoomId
         );
         emit VideoUnpublished(_id, video.RoomId, video.Owner);

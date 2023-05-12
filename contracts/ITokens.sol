@@ -83,8 +83,8 @@ interface ITokens {
     function transferTokens(
         address _from,
         address _to,
-        uint256 _amount,
-        uint _id
+        uint _id,
+        uint256 _amount
     ) external;
 
     function transferBatch(
@@ -113,11 +113,14 @@ interface ITokens {
         bool _listed,
         bool _published,
         bool _AdsEnabled,
-        uint _OwnerPercentage,
-        uint _HoldersPercentage,
-        uint _socialTokenId,
         uint _roomId
-    ) external ;
+    ) external;
+
+    function updateVideoRevenueParameters(
+        uint _id,
+        uint _ownerPercentage,
+        uint _holderPercentage
+    ) external;
 
     function updateRoomParameters(
         uint _id,

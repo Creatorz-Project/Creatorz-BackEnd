@@ -210,9 +210,9 @@ contract Token is ERC1155URIStorage {
     function transferTokens(
         address _from,
         address _to,
-        uint256 _amount,
-        uint _id
-    ) external {
+        uint _id,
+        uint256 _amount
+    ) external{
         _safeTransferFrom(_from, _to, _id, _amount, "");
     }
 
@@ -268,9 +268,6 @@ contract Token is ERC1155URIStorage {
         bool _listed,
         bool _published,
         bool _AdsEnabled,
-        uint _OwnerPercentage,
-        uint _HoldersPercentage,
-        uint _socialTokenId,
         uint _roomId
     ) external {
         videos[_id].Owner = _owner;
@@ -278,22 +275,32 @@ contract Token is ERC1155URIStorage {
         videos[_id].Listed = _listed;
         videos[_id].Published = _published;
         videos[_id].AdsEnabled = _AdsEnabled;
-        videos[_id].OwnerPercentage = _OwnerPercentage;
-        videos[_id].HoldersPercentage = _HoldersPercentage;
-        videos[_id].SocialTokenId = _socialTokenId;
         videos[_id].RoomId = _roomId;
+
         if (_action == 1) {
             videos[_id].Benefeciaries.push(_beneficiary);
         } else if (_action == 0) {
-            for (uint i = 0; i < videos[_id].Benefeciaries.length; i++) {
-                if (videos[_id].Benefeciaries[i] == _beneficiary) {
+            uint n = videos[_id].Benefeciaries.length;
+            for (uint i = 0; i < n; i++) {
+                address temp = videos[_id].Benefeciaries[i];
+                if (temp == _beneficiary) {
                     videos[_id].Benefeciaries[i] = videos[_id].Benefeciaries[
-                        videos[_id].Benefeciaries.length - 1
+                        n - 1
                     ];
                     videos[_id].Benefeciaries.pop();
+                    break;
                 }
             }
         }
+    }
+
+    function updateVideoRevenueParameters(
+        uint _id,
+        uint _ownerPercentage,
+        uint _holderPercentage
+    ) external {
+        videos[_id].OwnerPercentage = _ownerPercentage;
+        videos[_id].HoldersPercentage = _holderPercentage;
     }
 
     function updateRoomParameters(

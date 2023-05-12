@@ -67,9 +67,6 @@ contract MarketPlace is ERC1155Holder {
             true,
             video.Published,
             video.AdsEnabled,
-            video.OwnerPercentage,
-            video.HoldersPercentage,
-            video.SocialTokenId,
             video.RoomId
         );
         token.transferTokens(msg.sender, address(this), _id, 1);
@@ -92,9 +89,6 @@ contract MarketPlace is ERC1155Holder {
             false,
             video.Published,
             video.AdsEnabled,
-            video.OwnerPercentage,
-            video.HoldersPercentage,
-            video.SocialTokenId,
             video.RoomId
         );
         token.transferTokens(address(this), msg.sender, _id, 1);
@@ -119,9 +113,6 @@ contract MarketPlace is ERC1155Holder {
             false,
             video.Published,
             video.AdsEnabled,
-            video.OwnerPercentage,
-            video.HoldersPercentage,
-            video.SocialTokenId,
             _roomId
         );
         token.updateVideoParameters(
@@ -133,9 +124,6 @@ contract MarketPlace is ERC1155Holder {
             false,
             video.Published,
             video.AdsEnabled,
-            video.OwnerPercentage,
-            video.HoldersPercentage,
-            video.SocialTokenId,
             video.RoomId
         );
         emit VideoPurchased(_id, msg.sender, currentOwner, video.Price);
@@ -209,6 +197,7 @@ contract MarketPlace is ERC1155Holder {
             false
         );
         for (uint i = 0; i < room.VideoIds.length; i++) {
+            ITokens.Video memory video = token.getVideo(room.VideoIds[i]);
             token.updateVideoParameters(
                 room.VideoIds[i],
                 msg.sender,
@@ -218,10 +207,7 @@ contract MarketPlace is ERC1155Holder {
                 false,
                 false,
                 false,
-                token.getVideo(room.VideoIds[i]).OwnerPercentage,
-                token.getVideo(room.VideoIds[i]).HoldersPercentage,
-                token.getVideo(room.VideoIds[i]).SocialTokenId,
-                _id
+                video.RoomId
             );
         }
         emit RoomPurchased(_id, msg.sender, room.Owner, room.Price);
@@ -332,9 +318,6 @@ contract MarketPlace is ERC1155Holder {
             token.getVideo(videoId).Listed,
             token.getVideo(videoId).Published,
             token.getVideo(videoId).AdsEnabled,
-            token.getVideo(videoId).OwnerPercentage,
-            token.getVideo(videoId).HoldersPercentage,
-            token.getVideo(videoId).SocialTokenId,
             token.getVideo(videoId).RoomId
         );
         token.updateVideoParameters(
@@ -346,9 +329,6 @@ contract MarketPlace is ERC1155Holder {
             token.getVideo(videoId).Listed,
             token.getVideo(videoId).Published,
             token.getVideo(videoId).AdsEnabled,
-            token.getVideo(videoId).OwnerPercentage,
-            token.getVideo(videoId).HoldersPercentage,
-            token.getVideo(videoId).SocialTokenId,
             token.getVideo(videoId).RoomId
         );
         emit SocialTokenPurchased(
