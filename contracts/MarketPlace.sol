@@ -235,7 +235,6 @@ contract MarketPlace is ERC1155Holder {
             token.getSocialToken(_id).circulatingSupply + _amount,
             token.getSocialToken(_id).price,
             true,
-            token.getSocialToken(_id).revenueSplit,
             token.getSocialToken(_id).videoIds
         );
         token.transferTokens(msg.sender, address(this), _id, _amount);
@@ -263,7 +262,6 @@ contract MarketPlace is ERC1155Holder {
             token.getSocialToken(_id).circulatingSupply - _amount,
             token.getSocialToken(_id).price,
             true,
-            token.getSocialToken(_id).revenueSplit,
             token.getSocialToken(_id).videoIds
         );
         token.transferTokens(address(this), msg.sender, _id, _amount);

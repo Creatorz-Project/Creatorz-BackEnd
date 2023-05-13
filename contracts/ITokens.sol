@@ -137,7 +137,6 @@ interface ITokens {
         uint _circulatingSupply,
         uint price,
         bool _launched,
-        uint _revenueSplit,
         uint videoId
     ) external;
 

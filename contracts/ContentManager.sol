@@ -110,7 +110,6 @@ contract ContentManager {
             socialToken.circulatingSupply,
             socialToken.price,
             true,
-            socialToken.revenueSplit,
             socialToken.videoIds
         );
         tokens.updateSocialTokenHolderParameters(

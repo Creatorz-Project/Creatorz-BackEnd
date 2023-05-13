@@ -19,7 +19,6 @@ contract Token is ERC1155URIStorage {
         uint circulatingSupply;
         uint price;
         bool launched;
-        uint revenueSplit;
         address creator;
         uint maxHoldingAmount;
         uint videoIds;
@@ -83,7 +82,6 @@ contract Token is ERC1155URIStorage {
         uint256 amount,
         uint price,
         bool launched,
-        uint revenueSplit,
         address creator,
         uint maxHoldingAmount,
         uint videoIds
@@ -107,7 +105,6 @@ contract Token is ERC1155URIStorage {
 
     function mintSocialTokens(
         uint _amount,
-        uint _revenueSplit,
         uint _price,
         string memory _URI,
         uint _maxHoldingAmount,
@@ -124,7 +121,6 @@ contract Token is ERC1155URIStorage {
             0,
             _price,
             false,
-            _revenueSplit,
             msg.sender,
             _maxHoldingAmount,
             _videoId
@@ -136,7 +132,6 @@ contract Token is ERC1155URIStorage {
             _amount,
             _price,
             false,
-            _revenueSplit,
             msg.sender,
             _maxHoldingAmount,
             _videoId
@@ -212,7 +207,7 @@ contract Token is ERC1155URIStorage {
         address _to,
         uint _id,
         uint256 _amount
-    ) external{
+    ) external {
         _safeTransferFrom(_from, _to, _id, _amount, "");
     }
 
@@ -336,13 +331,11 @@ contract Token is ERC1155URIStorage {
         uint _circulatingSupply,
         uint price,
         bool _launched,
-        uint _revenueSplit,
         uint videoId
     ) external {
         socialTokens[_id].circulatingSupply = _circulatingSupply;
         socialTokens[_id].price = price;
         socialTokens[_id].launched = _launched;
-        socialTokens[_id].revenueSplit = _revenueSplit;
         socialTokens[_id].videoIds = videoId;
     }
 
