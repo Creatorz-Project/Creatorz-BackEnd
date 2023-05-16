@@ -16,7 +16,8 @@ contract ContentManager {
         uint roomId,
         address owner,
         address creator,
-        string URI
+        string URI,
+        bool adsEnabled
     );
     event VideoUnpublished(uint videoId, uint roomId, address owner);
     event SocialTokenLaunched(
@@ -42,10 +43,6 @@ contract ContentManager {
             "Video is already published"
         );
         ITokens.Video memory video = tokens.getVideo(_id);
-        require(
-            tokens.getSocialToken(video.SocialTokenId).launched == true,
-            "Social token is not launched"
-        );
         tokens.updateVideoParameters(
             _id,
             video.Owner,
@@ -67,7 +64,8 @@ contract ContentManager {
             video.RoomId,
             video.Owner,
             video.Creator,
-            video.URI
+            video.URI,
+            _adsEnabled
         );
     }
 
@@ -77,7 +75,7 @@ contract ContentManager {
             "Only the creator can unpublish a video"
         );
         require(
-            tokens.getVideo(_id).Published == false,
+            tokens.getVideo(_id).Published == true,
             "Video is already unpublished"
         );
         ITokens.Video memory video = tokens.getVideo(_id);

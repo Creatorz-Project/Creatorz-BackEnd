@@ -9,10 +9,16 @@ interface ITokens {
         uint circulatingSupply;
         uint price;
         bool launched;
-        uint revenueSplit;
         address creator;
         uint maxHoldingAmount;
         uint videoIds;
+    }
+
+    struct SocialTokenHolder {
+        uint Id;
+        uint amount;
+        uint price;
+        uint currentlyListed;
     }
 
     struct Video {
@@ -29,13 +35,6 @@ interface ITokens {
         bool Published;
         bool AdsEnabled;
         uint RoomId;
-    }
-
-    struct SocialTokenHolder {
-        uint Id;
-        uint amount;
-        uint price;
-        uint currentlyListed;
     }
 
     struct Ad {

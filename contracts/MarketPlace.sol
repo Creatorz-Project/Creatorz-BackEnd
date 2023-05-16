@@ -13,7 +13,8 @@ contract MarketPlace is ERC1155Holder {
         uint _id,
         address _buyer,
         address _seller,
-        uint _price
+        uint _price,
+        uint _roomId
     );
     event RoomListed(uint _id, uint _price);
     event RoomUnlisted(uint _id);
@@ -126,7 +127,13 @@ contract MarketPlace is ERC1155Holder {
             video.AdsEnabled,
             video.RoomId
         );
-        emit VideoPurchased(_id, msg.sender, currentOwner, video.Price);
+        emit VideoPurchased(
+            _id,
+            msg.sender,
+            currentOwner,
+            video.Price,
+            _roomId
+        );
     }
 
     function listRoom(uint _id, uint _price) public {

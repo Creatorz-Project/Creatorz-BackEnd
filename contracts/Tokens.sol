@@ -87,11 +87,8 @@ contract Token is ERC1155URIStorage {
         uint videoIds
     );
 
-    event VideoMinted(uint Id, string URI, address Owner);
-    event RoomMinted(uint Id, string URI, address Owner);
-    event TokenSold(uint Id, uint amount, address seller, address buyer);
-    event TokenLaunched(uint Id);
-    event TokenListed(uint Id, uint price, uint amount);
+    event VideoMinted(uint Id, string URI, address Owner, uint roomId);
+    event RoomMinted(uint Id, string URI, address Owner, uint displayCharge);
     event AdCreated(uint Id, string URI, address Advertiser);
 
     constructor() ERC1155(" ") {
@@ -161,7 +158,7 @@ contract Token is ERC1155URIStorage {
         );
         rooms[_roomId].VideoIds.push(newTokenId);
         videos[newTokenId] = newVideo;
-        emit VideoMinted(newTokenId, _URI, msg.sender);
+        emit VideoMinted(newTokenId, _URI, msg.sender, _roomId);
     }
 
     function createRoom(string memory _URI, uint _displayCharge) public {
@@ -180,7 +177,7 @@ contract Token is ERC1155URIStorage {
             false
         );
         rooms[newTokenId] = newRoom;
-        emit RoomMinted(newTokenId, _URI, msg.sender);
+        emit RoomMinted(newTokenId, _URI, msg.sender, _displayCharge);
     }
 
     function createAd(string memory _uri) public {
