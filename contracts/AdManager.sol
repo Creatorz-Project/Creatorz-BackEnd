@@ -115,6 +115,7 @@ contract AdManager is ERC1155Holder {
             ad.CurrentBudget,
             ad.MaxBudget
         );
+        emit PublisherRoomAdded(_RoomId, _AdId); 
     }
 
     function removePublishingRoom(uint _AdId, uint _RoomId) public {
