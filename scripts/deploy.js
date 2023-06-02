@@ -20,9 +20,9 @@ async function main() {
 }
 
 async function Managers() {
-  const verifyContract = await ethers.getContractFactory("AdManager");
+  const verifyContract = await ethers.getContractFactory("MarketPlace");
   const deployedVerifyContract = await verifyContract.deploy(
-    "0x0f1995C01973947097a9fd1489822716b9C0B044"
+    "0x7e302e1919f825F2C7376845E8796530F81B31f2"
   );
   console.log("MarketPlace Contract Address:", deployedVerifyContract.address);
   console.log("Sleeping.....");
@@ -30,7 +30,7 @@ async function Managers() {
 
   await hre.run("verify:verify", {
     address: deployedVerifyContract.address,
-    constructorArguments: ["0x0f1995C01973947097a9fd1489822716b9C0B044"],
+    constructorArguments: ["0x7e302e1919f825F2C7376845E8796530F81B31f2"],
   });
 }
 

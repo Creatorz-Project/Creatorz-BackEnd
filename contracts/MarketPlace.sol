@@ -93,6 +93,7 @@ contract MarketPlace is ERC1155Holder {
             video.RoomId
         );
         token.transferTokens(address(this), msg.sender, _id, 1);
+        emit VideoUnlisted(_id);
     }
 
     function buyVideo(uint _id, uint _roomId) public {

@@ -114,7 +114,7 @@ contract ContentManager {
             _id,
             socialToken.totalSupply,
             socialToken.price,
-            socialToken.circulatingSupply,
+            socialToken.totalSupply,
             msg.sender
         );
         emit SocialTokenLaunched(
