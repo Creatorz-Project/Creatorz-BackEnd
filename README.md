@@ -1,13 +1,3 @@
-# Sample Hardhat Project
+# Link to nknow more about our project Creatorz
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
-
-Try running some of the following tasks:
-
-```shell
-npx hardhat help
-npx hardhat test
-REPORT_GAS=true npx hardhat test
-npx hardhat node
-npx hardhat run scripts/deploy.js
-```
+https://www.notion.so/ayush45/394ea368aed246d7b10446c162e1e1c3?v=2afeb8e3853a4bd49af84ee8f178b22c
